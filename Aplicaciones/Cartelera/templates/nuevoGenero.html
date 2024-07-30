@@ -1,0 +1,95 @@
+{% extends "./plantilla.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <!--El metodo post es mas seguro al transportar datos-->
+
+            <!--Añadir el enctype (Para que un formulario pueda pasar de un template a una vista) (Se ocupa cuando quiero subir archivos) -->
+            <br>
+            <form action="{% url 'guardarGenero' %}"
+                enctype="multipart/form-data" style="margin-left: 50%;" id="frm_nuevo_genero" method="post">
+                <!-- Para que no exista Hackeo -->
+                {% csrf_token %}
+                <label for="" style="color: white;"><b>Nombre:</b></label>
+                <input type="text" name="nombre" class="form-control"
+                id="nombre" placeholder="Ingrese el nombre del genero">
+                <br>
+                <label for=""  style="color: white;"><b>Descripcion</b></label>
+                <textarea name="descripcion" id="descripcion"
+                class="form-control" rows="3" placeholder="Ingrese la descripción"></textarea>
+                <br>
+                <label for=""  style="color: white;"><b>Foto</b></label>
+
+                <!--El accept solo es para aceptar imagenes-->
+                <input type="file" name="foto" class="form-control"
+                id="foto" accept="image/*">
+                <br>
+                <br>
+
+                 <!--Para ver la imágen que vamos a ingresar una de las formas, otra de las formas esta en Director-->
+
+                <center>
+                    <img src="{% static 'img/images.jpg' %}"  alt="" id="img" height="300px" width="300px" >
+                </center>
+                <br>
+                <div class="text-end">
+                    <button type="button" id="clearBtn" class="btn btn-primary"><i class="fa-solid fa-trash-can"></i> </button>
+                    <a href="{% static 'img/images.jpg' %}" data-lightbox="footerGallery-1" id="maximizeLink" class="btn btn-primary"><i class="fa-solid fa-maximize"></i></a>
+                </div>
+                <br> <br>
+
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'listadoGenero' %}" class="btn btn-danger">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src={% static 'js/script.js' %}></script>
+
+<script>
+    $("#frm_nuevo_genero").validate({
+
+        // Fomato Json 
+
+        rules:{
+            nombre:{
+                required: true,
+                minlength: 3,
+                maxlength: 10
+            },
+            descripcion:{
+                required: true,
+            },
+            foto:{
+                required: true
+            }
+        },
+        messages:{
+            nombre:{
+                required: "Ingrese su nombre",
+                minlength: "El nombre debe tener al menos 3 letras",
+                maxlength: "Máximo 10 Caracteres",
+
+            },
+            descripcion:{
+                required: "Ingrese la descripción", 
+            },
+            foto:{
+                required: "Ingrese una foto"
+            }
+        }
+    });
+
+</script>
+
+<br>
+
+{% endblock %}

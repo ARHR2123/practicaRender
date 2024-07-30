@@ -1,0 +1,68 @@
+{% extends "./plantilla.html" %}
+{% load static %}
+{% block body %}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- El metodo post es mas seguro al transportar datos -->
+            <form action="{% url 'guardarDirector' %}"
+            enctype="multipart/form-data" method="post">
+                <!--Para que no exista Hackeo -->
+                {% csrf_token %}
+                <label for="" style="color: white;"><b>DNI:</b></label>
+                <input type="number" name="dni" class="form-control"
+                id="dni" placeholder="Ingrese el nombre del genero">
+                <br>
+                <label for=""  style="color: white;"><b>APELLIDO:</b></label>
+                <input type="text" name="apellido" class="form-control"
+                id="apellido" placeholder="Ingrese el apellido del director">
+                <br>
+                <label for=""  style="color: white;"><b>NOMBRE:</b></label>
+                <input type="text" name="nombre" class="form-control"
+                id="nombre" placeholder="Ingrese el nombre del director">
+                <br>
+                <label for=""  style="color: white;"><b>ESTADO:</b></label>
+                <select class="form-select" id="estado" name="estado" aria-label="Default select example">
+                    <option selected>SELECCIONE</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                <label for=""  style="color: white;"><b>Foto</b></label>
+
+                <!--El accept solo es para aceptar imagenes-->
+                <input type="file" name="foto" class="form-control"
+                id="foto" accept="image/*">
+                <br>
+
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'listadoDirector' %}" class="btn btn-danger">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Otra forma para ingresar Imágenes, con arrastrar y soltar -->
+
+<style>
+    .file-input-theme .file-drop-zone {
+        background-color: black; /* Cambia el color de fondo */
+        border: 1px solid white; /* Cambia el borde */
+        color: white;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        $("#foto").fileinput({                       
+            showBrowse: true,
+            browseOnZoneClick: true            
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends './plantilla.html' %}
+{% load static %}
+{% block body %}
+  <div class="container">
+    <h1 style="color: white;">Gestión Director con Peticiones Asíncronas</h1>
+    <br />
+    <div class="row">
+      <div class="col-md-12 text-end">
+        <!-- Button trigger modal -->
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus">&nbsp;&nbsp;</i>Agregar Director</button>
+        <br />
+        <br />
+        <button type="button" class="btn btn-success" onclick="cargarDirectores();"><i class="fas fa-refresh">&nbsp;&nbsp;</i>Actualizar</button>
+      </div>
+      <br />
+      <!-- Componente para cargar datos de Cines -->
+
+      <div class="col-md-12" id="contenedor-director"></div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Director</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-director" enctype="multipart/form-data" method="post">
+              {% csrf_token %}
+
+              <label for="" style="color: white;"><b>DNI:</b></label>
+              <input type="number" name="dni" class="form-control" id="dni" placeholder="Ingrese el nombre del genero" />
+              <br />
+              <label for="" style="color: white;"><b>APELLIDO:</b></label>
+              <input type="text" name="apellido" class="form-control" id="apellido" placeholder="Ingrese el apellido del director" />
+              <br />
+              <label for="" style="color: white;"><b>NOMBRE:</b></label>
+              <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre del director" />
+              <br />
+              <label for="" style="color: white;"><b>ESTADO:</b></label>
+              <select class="form-select" id="estado" name="estado" aria-label="Default select example">
+                <option selected>-- SELECCIONE --</option>
+                <option value="True">True</option>
+                <option value="False">False</option>
+              </select>
+              <label for="" style="color: white;"><b>Foto</b></label>
+
+              <!-- El accept solo es para aceptar imagenes -->
+              <input type="file" name="foto" class="form-control" id="foto" accept="image/*" />
+              <br />
+              <button onclick="GuardarDatos()" class="btn btn-primary">Guardar</button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="{% url 'listadoDirector' %}" class="btn btn-danger">Cancelar</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<br /><br /><br /><br /><br />
+
+<script>
+
+
+    $("#form-director").validate({
+        rules:{
+            dni:{
+                required:true,
+                digits: true
+
+            },
+            apellido:{
+                required: true
+            },
+            nombre:{
+                required: true
+            },
+            estado:{
+                required: true
+            },
+            foto:{
+                required: true
+            }
+        },
+        messages:{
+            dni:{
+                required:"Ingrese el DNI del Director",
+                digits: "Solo se aceptan números"
+
+            },
+            apellido:{
+                required: "Ingrese el apellido"
+            },
+            nombre:{
+                required: "Ingre el nombre"
+            },
+            estado:{
+                required: "Escoja el estado"
+            },
+            foto:{
+                required: "Ingrese una foto del Director"
+            }
+        },
+        //  Peticiones Asíncronas
+
+    });
+
+    // Fetch
+
+    function GuardarDatos() {
+
+        // Recuperar un formulario, es decir los datos que se ingrese
+
+        var form = new FormData(document.getElementById('form-director'));
+        // Método fetch
+
+        fetch('{% url "guardarDir" %}',{
+            method:"POST",
+            body: form,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        cargarDirectores();
+    }
+
+    function cargarDirectores(){
+        $("#contenedor-director")
+            .load('{% url "listadoDirector" %}');
+    }
+
+</script>
+
+<style>
+    /* Dar al borde */
+    .dt-input{
+      border:3px solid white !important;
+      border-radius: 20px !important;
+      margin-left: 60%;
+      margin-right: 42%;
+
+    }
+    .dt-search label{
+      color: white !important;
+    }
+
+    .dt-search input{
+      color: white !important;
+    }
+
+</style>
+{% endblock %}

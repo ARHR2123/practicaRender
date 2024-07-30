@@ -1,0 +1,90 @@
+
+{% extends "./plantilla.html" %}
+{% block body %}
+
+<br>
+<div >
+    <div class="text-center">
+        <h3 style="color: white"><b>Listado de Generos</b></h3>
+    </div>
+</div>
+<br>
+<div class="text-end">
+  <a href="{% url 'nuevoGenero' %}" class="btn btn-success" style="margin-right: 25%;">Agregar Genero</a>
+</div>
+<center>
+  <hr style=" width: 50%; border: 2px solid white;">
+</center>
+<table style="margin-left: 20%; width: 60%;" class="table table-striped table-hover" id="tbl-generos">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">NOMBRE</th>
+        <th scope="col">DESCRIPCIÓN</th>
+        <th scope="col">FOTO</th>
+
+        <th></th>
+      </tr>
+    </thead>
+
+    <!-- Consultar los datos de la base de datos y traerlos a la tabla creada -->
+    <tbody>
+      {% for generoTemporal in generos %}
+            <tr>
+                <td>{{generoTemporal.id}}</td>
+                <td>{{generoTemporal.nombre}}</td>
+                <td>{{generoTemporal.descripcion}}</td>
+                <td>
+
+                  <!-- download descargar la imagen -->
+
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <center><img src="{{generoTemporal.foto.url}}" alt="No hay" height="150px" width="150px"></center>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a download href="{{generoTemporal.foto.url}}" class="dropdown-item" style="color:red" ><b>DESCARGAR</b></a></li>
+                      <li><a href="{{generoTemporal.foto.url}}" target="_blank" class="dropdown-item btn btn-info"><b>AMPLIAR</b></a></li>
+                    </ul>
+                  </div>
+
+                </td>
+                <td>
+                  <a href="{% url 'editarGenero' generoTemporal.id %}" class="btn btn-warning">Editar</a>
+                  
+                  <!-- Llamar a la url con parámetros -->
+
+                  <a href="{% url 'eliminarGenero' generoTemporal.id %}" class="btn btn-danger"
+                  onclick="return confirm('Estás seguro que deseas eliminar?')">Eliminar</a>
+                </td>
+            </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    // LLamar a mi tabla con el nombre del id
+    let table = new DataTable('#tbl-generos');
+  
+  </script>
+
+  <style>
+    /* Dar al borde */
+    .dt-input{
+      border:3px solid white !important;
+      border-radius: 20px !important;
+      margin-left: 60%;
+      margin-right: 42%;
+
+    }
+    .dt-search label{
+      color: white !important;
+    }
+
+    .dt-search input{
+      color: white !important;
+    }
+
+  </style>
+
+{% endblock %}

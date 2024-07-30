@@ -1,0 +1,129 @@
+{% extends './plantilla.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container">
+    <h1 style="color: white;">Gestión Cine con Peticiones Asíncronas</h1>
+    <br>
+    <div class="row">
+        <div class="col-md-12 text-end">
+            <!-- Button trigger modal -->
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus">&nbsp;&nbsp;</i>Agregar Cine</button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-success" onclick="cargarCines();"><i class="fas fa-refresh">&nbsp;&nbsp;</i>Actualizar</button>
+    
+        </div>
+        <br>
+        <!-- Componente para cargar datos de Cines -->
+
+        <div class="col-md-12" id="contenedor-cines">
+
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Cine</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" id="frm_nuevo_cine">
+                        <!-- Para que no exista Hackeo -->
+                        {% csrf_token %}
+                        <label for=""><b>Nombre:</b></label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese el nombre del cine">
+                        <br>
+                        <label for=""><b>Dirección:</b></label>
+                        <input type="text" name="direccion" id="direccion" class="form-control" placeholder="Ingrese la direccion del cine">
+                        <br>
+                        <label for=""><b>Teléfono:</b></label>
+                        <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ingrese el telefono del cine">
+                        <br>
+                        <br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save">&nbsp;&nbsp;</i>Guardar</button>
+                            <button type="button" class="btn btn-danger" style="margin-left: 10%;" data-bs-dismiss="modal"><i class="fas fa-times">&nbsp;&nbsp;</i>Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br><br><br>
+
+<script>
+    $("#frm_nuevo_cine").validate({
+        rules:{
+            nombre:{
+                required:true,
+                minlength: 3,
+                maxlength: 10
+            },
+            direccion:{
+                required: true
+            },
+            telefono:{
+                required: true,
+                digits: true
+            }
+        },
+        messages:{
+            nombre:{
+                required: "Ingrese su nombre",
+                minlength: "El nombre debe tener al menos 3 letras",
+                maxlength: "Máximo 10 Caracteres",
+
+            },
+            direccion:{
+                required: "Ingrese la direccion", 
+            },
+            telefono:{
+                required: "Ingrese un telefono",
+                digits: "Ingrese solo números"
+            }
+        },
+        //  Peticiones Asíncronas
+
+        submitHandler:function(formulario){
+            // Ajax --> asincronos -->  Invocar nuestro backend
+            $.ajax({
+                url:"{% url 'guardarC' %}",
+                type: "post",
+                data:$(formulario).serialize(),
+                success:function(data){
+                    if (data.estad|o){
+                        Swal.fire({
+                            title: "Confirmación",
+                            text:data.mensaje,
+                            icon: "success"
+                        });
+                        $("#exampleModal").modal('hide') // Cierra la modal
+                        $(formulario)[0].reset(); // Reseteo de Campos
+                        cargarCines(); // Cargar Cine Automático
+                    }else{
+                        alert("Error")
+
+                    }
+                },
+                error:function(data){
+                    console.log(data);
+                }
+            });
+        }
+    });
+
+    // Cargar los datos de otro archivo
+
+    function cargarCines(){
+        $("#contenedor-cines")
+            .load('{% url "listadoCine" %}');
+    }
+    cargarCines();
+</script>
+{% endblock %}

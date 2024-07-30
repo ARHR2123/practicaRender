@@ -1,0 +1,44 @@
+{% extends "./plantilla.html" %}
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!--El metodo post es mas seguro al transportar datos-->
+            <form action="{% url 'procesarActualizacionGenero' %}" method="post">
+                <!-- Para que no exista Hackeo -->
+                {% csrf_token %}
+
+                <!-- Para editar debemos crear un value -->
+
+                <input type="hidden" name="id" class="form-control"
+                id="id" value="{{generoEditar.id}}">
+                <br>
+                <label for="" style="color: white;"><b>Nombre:</b></label>
+                <input type="text" name="nombre" class="form-control"
+                id="nombre" value="{{generoEditar.nombre}}" placeholder="Ingrese el nombre del genero">
+                <label for=""  style="color: white;"><b>Descripcion</b></label>
+
+                <!-- Para que nos visualice el text area debemos ponerle afuera -->
+
+                <textarea name="descripcion" id="descripcion"
+                class="form-control" rows="3" placeholder="Ingrese la descripción">{{generoEditar.descripcion}}
+                </textarea>
+
+                <label for=""  style="color: white;"><b>Foto</b></label>
+
+                <!--El accept solo es para aceptar imagenes-->
+                <input type="file" name="foto" class="form-control"
+                id="foto" value="{{generoEditar.foto}}">
+                <br>
+                <button type="submit" class="btn btn-warning">
+                    ACTUALIZAR
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'listadoGenero' %}" class="btn btn-danger">CANCELAR</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
